@@ -1,0 +1,35 @@
+{
+  "name": "@bblocks/dom",
+  "version": "0.1.0",
+  "description": "",
+  "main": "dom.js",
+  "scripts": {
+    "watch": "npm-watch",
+    "doc": "./node_modules/.bin/jsdoc dom.js -d docs/api/",
+    "min": "node ./node_modules/uglify-js/bin/uglifyjs dom.js -c -m -o dom.min.js"
+  },
+  "watch": {
+    "min": "dom.js",
+    "doc": "dom.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bBlocks/dom.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bBlocks/dom/issues"
+  },
+  "homepage": "https://github.com/bBlocks/dom#readme",
+  "dependencies": {
+    "@bblocks/component": "^0.1.0"
+  },
+  "devDependencies": {
+    "jsdoc": "^3.4.3",
+    "jasmine": "^2.6.0",
+    "npm-watch": "^0.1.9",
+    "uglify-js": "^3.0.15",
+    "umd": "^3.0.1"
+  }
+}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Component</title>
+	<script src="../component/component.polyfills.min.js"></script>
+	
+	
+</head>
+
+<body>
+
+	<script src="../component/component.js"></script>
+	<script src="dom.js"></script>
+	<script>
+		var myComp = bb.component(bb.dom, {
+			is: 'my-test-component',
+			t1: performance.now(),
+			test: function () {
+				console.log('test postponded for', performance.now() - this.t1, this);
+			},
+			on: {
+				create: function() {
+					this.t1 = performance.now();
+					this.debounce(this.test, 500)();
+					this.innerHTML = '<p>test<span>1</span><span>2</span></p>';
+					console.log('find', this.find('p'));
+					console.log('findAll', this.find('span', true));
+
+				}	
+			}
+		});
+		var el = new myComp();
+		
+
+	</script>
+
+</body>
+
+</html>
