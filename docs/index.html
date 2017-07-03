@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>DOM helpers</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+	 crossorigin="anonymous">
+	<script src="https://rawgit.com/bBlocks/component/master/component.polyfills.min.js"></script>
+	<!--<script src="https://rawgit.com/bBlocks/component/master/component.min.js"></script>-->
+	<script src="../../component/component.js"></script>
+	<!--<script src="https://rawgit.com/bBlocks/dom/master/dom.js"></script>-->
+	<script src="../dom.js"></script>
+</head>
+<body>
+	<div class="container">
+		<h1>DOM helpers demo</h1>
+		<ul class="nav nav-pills">
+			<li role="presentation"><a href="https://github.com/bBlocks/dom">Repository</a></li>
+			<li role="docs"><a href="api/index.html">Documentation</a></li>
+		</ul>
+
+
+		<div class="well" id="empty">
+			<h2>Empty, set HTML</h2>
+			<my-custom-div>My custom div</my-custom-div>
+			<div>My native div</div>
+			<p><button id="clear" class="btn btn-default">Clear both</button> <button id="fill" class="btn btn-default">Fill</button></p>
+			<script>		
+				// Define my-custom-div component
+				bb.component(bb.dom, {
+					is: 'my-custom-div',
+					on: {
+						attach: function() {
+							this.innerHTML = '<b>Hello!</b>';
+						}
+					}
+				});
+
+				var div = document.querySelector('#empty div');
+				var customDiv = document.querySelector('#empty my-custom-div');
+				Object.assign(div, bb.dom); // enhance div element
+
+				// Handle Clear
+				document.querySelector('#clear').addEventListener('click', function() {
+					customDiv.empty();
+					div.empty();
+				});
+				
+				// Handle Fill
+				document.querySelector('#fill').addEventListener('click', function() {
+					div.html('My native div');
+					customDiv.html('My custom div');
+				});
+
+			</script>
+		</div>
+
+		<div class="well" id="attr">
+			<h1>Set, get attributes</h1>
+			<a href="https://github.com/bBlocks/sandbox/wiki/Intro">My link</a>
+			<br>
+			<button class="btn btn-default">Show URL</button>
+			<script>					
+
+				// Handle Show
+				document.querySelector('#attr button').addEventListener('click', function() {
+					var link = document.querySelector('#attr a');
+					var url = bb.dom.attr.call(link, 'href');
+					bb.dom.html.call(link, url); 	
+				});
+			</script>
+		</div>
+
+		<div class="well" id="fire">
+			<h1>Fire events</h1>
+			<my-custom-div></my-custom-div>
+			<br>
+			<button class="btn btn-default">Bingo!</button>
+			<script>					
+				var div3 = document.querySelector('#fire my-custom-div');
+
+				// Handle custom event bingo
+				div3.listen('bingo', function(event) {
+					this.html(event.detail.message);
+				});
+
+				// Fire bingo event on button click
+				document.querySelector('#fire button').addEventListener('click', function() {
+					div3.fire('bingo', {message: 'Bingo!'});
+				});
+				
+			</script>
+		</div>
+
+
+		
+		<div class="well" id="debounce">
+			<h1>Debounce</h1>
+			<my-custom-div></my-custom-div>
+			<br>
+			<button class="btn btn-default">Click me many times</button>
+			<script>					
+				var div4 = document.querySelector('#debounce my-custom-div');
+				div4.clickCount = 0;
+				div4.renderCount = 0;
+				div4.render = function() {
+					this.renderCount++;
+					this.innerHTML = 'Rendered ' + this.renderCount + ' times.';					
+				};
+				div4.delayedRender = div4.debounce(div4.render,1000);
+
+				// Render with delay of 1 second
+				document.querySelector('#debounce button').addEventListener('click', function() {
+					div4.clickCount++;
+					this.innerHTML = 'Click me many times (' + div4.clickCount + ')';
+					div4.delayedRender();
+				});
+				
+			</script>
+		</div>
+
+		<div class="well" id="parse">
+			<h1>Parse, find</h1>
+			<div class="form-group">
+				<label>Enter code to parse</label>
+				<textarea class="form-control" rows="3"><i>Hello!</i> I'am <b>here</b>!</textarea>
+				<span></span>
+			</div>
+			<button class="btn btn-default" >Parse</button>
+			<div></div>
+		
+			
+			<script>
+				(function() {				
+					var el,
+						div = document.querySelector('#parse div');
+				
+					el = document.createElement('my-custom-div');
+					div.appendChild(el);
+					el.innerHTML = '';
+
+					// Parse
+					document.querySelector('#parse button').addEventListener('click', function() {
+						var html = document.querySelector('#parse textarea').value;
+						el.appendChild(el.parse(html));
+						// Find
+						var count = el.find('b', true).length;
+						document.querySelector('#parse .form-group span').innerHTML = 'Bold count ' + count;
+					});
+				})();
+			</script>
+		</div>
+	</div>
+	
+</body>
+
+</html>
